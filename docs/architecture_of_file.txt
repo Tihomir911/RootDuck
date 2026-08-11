@@ -1,0 +1,89 @@
+RootDuck/
+├── .gitignore
+├── README.md
+├── docker-compose.yml
+│
+├── agent/                              # C++ security-агент
+│   ├── CMakeLists.txt
+│   └── src/
+│       ├── main.cpp                    # точка входа, разбор команд (sysconnect)
+│       ├── tokenGenerator.cpp/.h       # генерация токена + хэширование
+│       ├── certGenerator.cpp/.h        # генерация self-signed TLS сертификата
+│       └── tlsProxy.cpp/.h             # TLS-прокси перед api-gateway
+│
+├── backend/
+│   ├── apiGateway/
+│   │   ├── main.py                     # точка входа FastAPI
+│   │   ├── routes.py                   # REST-роуты
+│   │   ├── wsHandlers.py               # WebSocket /ws/metrics, /ws/logs
+│   │   ├── authMiddleware.py           # проверка JWT на каждый запрос
+│   │   └── requirements.txt
+│   │
+│   ├── authService/
+│   │   ├── main.py
+│   │   ├── tokenStore.py               # хранение хэша токена
+│   │   ├── jwtIssuer.py                # выдача/валидация JWT
+│   │   └── requirements.txt
+│   │
+│   ├── dockerAgentService/
+│   │   ├── main.py
+│   │   ├── containerList.py            # список контейнеров
+│   │   ├── containerStats.py           # CPU/RAM/network статы
+│   │   ├── containerControl.py         # restart/stop/start
+│   │   └── requirements.txt
+│   │
+│   ├── processWatcher/
+│   │   ├── main.py
+│   │   ├── watchedServices.yaml        # конфиг: имя, поиск по имени/порту/pid
+│   │   ├── processScanner.py           # psutil-логика поиска процессов
+│   │   └── requirements.txt
+│   │
+│   └── metricsCollector/
+│       ├── main.py
+│       ├── systemMetrics.py            # CPU/RAM/диски/сеть/температуры
+│       ├── metricsHistory.py           # запись в SQLite
+│       ├── metricsCache.py             # запись в Redis (live-данные)
+│       └── requirements.txt
+│
+├── client/                             # десктоп-приложение PySide6
+│   ├── mainGui.py                      # точка входа приложения
+│   ├── requirements.txt
+│   │
+│   ├── assets/
+│   │   ├── logo.png                    # твой сгенерированный логотип
+│   │   ├── iconAppWindow.ico           # иконка окна/трея (Windows)
+│   │   ├── iconAppWindow.icns          # иконка (macOS, если понадобится)
+│   │   └── appIcons/                   # логотипы известных приложений
+│   │       ├── docker.svg
+│   │       ├── jellyfin.svg
+│   │       ├── syncthing.svg
+│   │       └── defaultApp.svg          # дефолтная иконка для неизвестных
+│   │
+│   ├── ui/
+│   │   ├── mainWindow.py               # главное окно, QTabWidget/меню
+│   │   ├── serversTab.py               # вкладка Servers
+│   │   ├── monitoringTab.py            # вкладка Monitoring
+│   │   ├── programsTab.py              # вкладка Programs
+│   │   ├── terminalTab.py              # вкладка Terminal
+│   │   ├── settingsTab.py              # вкладка Settings
+│   │   ├── addServerDialog.py          # диалог добавления сервера (IP+токен)
+│   │   ├── programTile.py              # кастомный виджет тайла программы
+│   │   ├── serverTile.py               # кастомный виджет тайла сервера
+│   │   ├── circlePlusButton.py         # кастомная круглая кнопка "+"
+│   │   └── sparklineWidget.py          # мини-график нагрузки для тайлов
+│   │
+│   ├── theme/
+│   │   ├── darkBlueTheme.qss           # тёмная тема, синие акценты
+│   │   └── styleConstants.py           # цвета/отступы как константы
+│   │
+│   ├── network/
+│   │   ├── apiClient.py                # REST-запросы к api-gateway
+│   │   ├── wsClient.py                 # WebSocket-подключение (live-данные)
+│   │   └── sshClient.py                # SSH-сессия для Terminal tab
+│   │
+│   └── storage/
+│       └── serverStorage.py            # локальное шифрованное хранилище
+│                                        # списка серверов (IP+токен)
+│
+└── docs/
+    └── ARCHITECTURE.md                 # ТЗ и архитектура (уже есть)

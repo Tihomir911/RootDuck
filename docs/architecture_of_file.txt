@@ -3,13 +3,16 @@ RootDuck/
 ├── README.md
 ├── docker-compose.yml
 │
-├── agent/                              # C++ security-агент
-│   ├── CMakeLists.txt
-│   └── src/
-│       ├── main.cpp                    # точка входа, разбор команд (sysconnect)
-│       ├── tokenGenerator.cpp/.h       # генерация токена + хэширование
-│       ├── certGenerator.cpp/.h        # генерация self-signed TLS сертификата
-│       └── tlsProxy.cpp/.h             # TLS-прокси перед api-gateway
+agent/
+├── CMakeLists.txt          # вне src/, как у тебя и было
+└── src/
+    ├── main.cpp
+    ├── tokenGenerator.h
+    ├── tokenGenerator.cpp
+    ├── certGenerator.h
+    ├── certGenerator.cpp
+    ├── tlsProxy.h
+    └── tlsProxy.cpp
 │
 ├── backend/
 │   ├── apiGateway/

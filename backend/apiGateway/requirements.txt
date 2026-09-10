@@ -1,0 +1,4 @@
+fastapi
+unicorn[standart]
+pyjwt
+httpx

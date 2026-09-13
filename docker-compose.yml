@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build: ./backend/apiGateway
+    ports:
+      - "8000:8000"
+    volumes:
+      - jwt-secret-data:/data
+    depends_on:
+      - auth-services
+
+  auth-service:
+    build: ./backend/authService
+    volumes:
+      - jwt-secret-data:/data
+      - /etc/rootduck/token.hash:/etc/rootduck/token.hash:ro
+
+  docker-agent-service:
+    build: ./backend/dockerAgentService
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  process-watcher:
+    build: ./backend/processWatcher
+
+  metrics-collector:
+    build: ./backend/metricsCollector
+    volumes:
+      - metrics-data:/data  
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+volumes:
+  metrics-data:
+  jwt-secret-data:

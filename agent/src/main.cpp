@@ -1,11 +1,11 @@
 #include "tokenGenerator.h"
 #include "certGenerator.h"
 #include "tlsProxy.h"
- 
-#include <ifaddrs.h>     
-#include <netinet/in.h>  
-#include <arpa/inet.h>   
- 
+
+#include <ifaddrs.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include <iostream>
 #include <string>
 
@@ -13,7 +13,7 @@ using namespace std;
 
 namespace {
 
-    const string CONFIG_DIR = "etc/rootduk";
+    const string CONFIG_DIR = "/etc/rootduck";
     const string CERT_PATH = CONFIG_DIR + "/cert.pem";
     const string KEY_PATH = CONFIG_DIR + "/key.pem";
     const string TOKEN_HASH_PATH = CONFIG_DIR + "/token.hash";
@@ -22,7 +22,7 @@ namespace {
         ifaddrs* interfaces = nullptr;
 
         if (getifaddrs(&interfaces) != 0) {
-            return ""; 
+            return "";
         }
 
         string result;
@@ -36,7 +36,7 @@ namespace {
                 continue;
             }
 
-            if (strig(iface->ifa_name) == "lo") {
+            if (string(iface->ifa_name) == "lo") {
                 continue;
             }
 
@@ -59,10 +59,10 @@ namespace {
     int runSysconnect(){
 
         if (!rootduck::generateSelfSignedCert(CERT_PATH, KEY_PATH)) {
-        
+
             cerr << "Ошибка: не удалось создать TLS-сертификат\n";
             return 1;
-        
+
         }
 
         string token = rootduck::generateToken();
@@ -75,9 +75,9 @@ namespace {
 
         string ip = getLocalIpAddress();
         if (ip.empty()) {
-
-            std::cerr << "Предупреждение: не удалось определить IP-адрес автоматически\n";
-
+            cerr << "Предупреждение: не удалось определить IP-адрес автоматически\n";
+ 
+            ip = "<не определён>";
         }
 
         cout << "\n";
@@ -98,7 +98,7 @@ namespace {
     }
 }
 
-int main(int argc, chat** argv) {
+int main(int argc, char** argv) {
     if (argc < 2) {
         cerr << "Usage: rootduck-agent <command>\n";
         cerr << "Commands: sysconnect\n";
@@ -113,4 +113,4 @@ int main(int argc, chat** argv) {
 
     cerr << "Unknown command: " << command << "\n";
     return 1;
- }
+}

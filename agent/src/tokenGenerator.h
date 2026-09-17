@@ -1,20 +1,17 @@
-#pragma once 
+#pragma once
 
-#include <iostream>
 #include <string>
 
-using namespace std;
+namespace rootduck {
 
-namecpace rootduck{
+std::string generateToken();
 
-    string generateToken();
+std::string hashToken(const std::string& token);
 
-    string hashToken(const string& token);
+bool saveTokenHash(const std::string& hash, const std::string& filePath);
 
-    bool saveTokenHash(const string& hash, const string& filePath);
+std::string loadTokenHash(const std::string& filePath);
 
-    string LoadTokenHash(const string& filePath);
+bool verifyToken(const std::string& candidateToken, const std::string& storedHash);
 
-    bool verifyToken(const string& candidateToken, const string& storedHash);
-    
-}
+}  

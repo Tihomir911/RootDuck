@@ -8,7 +8,7 @@ services:
     volumes:
       - jwt-secret-data:/data
     depends_on:
-      - auth-services
+      - auth-service
 
   auth-service:
     build: ./backend/authService

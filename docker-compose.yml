@@ -8,27 +8,39 @@ services:
     volumes:
       - jwt-secret-data:/data
     depends_on:
-      - auth-service
+      auth-service:
+        condition: service_healthy
+    restart: unless-stopped
 
   auth-service:
     build: ./backend/authService
     volumes:
       - jwt-secret-data:/data
       - /etc/rootduck/token.hash:/etc/rootduck/token.hash:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
 
   docker-agent-service:
     build: ./backend/dockerAgentService
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
 
   process-watcher:
     build: ./backend/processWatcher
+    restart: unless-stopped
 
   metrics-collector:
     build: ./backend/metricsCollector
     volumes:
-      - metrics-data:/data  
-
+      - metrics-data:/data
+    restart: unless-stopped
+    
   redis:
     image: redis:7-alpine
     restart: unless-stopped

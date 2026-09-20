@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from routes import router
 
-app = FastAPI(title = "RootDock API Gateway")
+app = FastAPI(title = "RootDuck API Gateway")
 app.include_router(router)
 
 @app.get("/health")

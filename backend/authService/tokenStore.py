@@ -2,7 +2,7 @@ import hashlib
 import hmac
 import os
 
-TOKEN_HASH_PATH = os.enviton.get("TOKEN_HASH_PATH", "/etc/rootduck/token.hash")
+TOKEN_HASH_PATH = os.environ.get("TOKEN_HASH_PATH", "/etc/rootduck/token.hash")
 
 def _hash_token(token:str) -> str:
     

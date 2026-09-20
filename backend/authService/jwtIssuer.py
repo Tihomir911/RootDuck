@@ -1,44 +1,27 @@
 import os
-import time
 from pathlib import Path
  
-import jwt 
-
+import jwt
+ 
 JWT_SECRET_PATH = os.environ.get("JWT_SECRET_PATH", "/data/jwt_secret.key")
-
-JWT_TTL_SECONDS = 3600
- 
 ALGORITHM = "HS256"
+ 
+ 
+def _load_secret() -> str:
 
-def _load_or_create_secret() -> str:
-    
     path = Path(JWT_SECRET_PATH)
-    if path.exists():
-        return path.read_text().strip()
-    
-    secret = os.urandom(32).hex()
- 
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(secret)
-    return secret
-
-
-_SECRET = _load_or_create_secret()
+    if not path.exists():
+        raise RuntimeError(
+            f"JWT secret не найден по пути {JWT_SECRET_PATH} — "
+            "убедись, что authService уже запускался и создал файл"
+        )
+    return path.read_text().strip()
  
  
-def issue_jwt() -> str:
-    
-    now = int(time.time())
-    payload = {
-        "iat": now,
-        "exp": now + JWT_TTL_SECONDS,
-    }
-    return jwt.encode(payload, _SECRET, algorithm=ALGORITHM)
-
 def verify_jwt(token: str) -> bool:
-    
     try:
-        jwt.decode(token, _SECRET, algorithms=[ALGORITHM])
+        secret = _load_secret()
+        jwt.decode(token, secret, algorithms=[ALGORITHM])
         return True
-    except jwt.PyJWTError:
+    except (jwt.PyJWTError, RuntimeError):
         return False

@@ -7,15 +7,11 @@ from authMiddleware import require_valid_jwt
 
 router = APIRouter()
 
-# Адрес authService внутри docker-компоуз сети. Docker Compose поднимает
-# для каждого сервиса DNS-имя, равное имени сервиса в docker-compose.yml —
-# поэтому "http://auth-service:8000" резолвится в правильный контейнер
-# без хардкода IP-адресов.
 AUTH_SERVICE_URL = "http://auth-service:8000"
 
 
 class ExchangeTokenRequest(BaseModel):
-    token: str  # сырой токен от rootduck-agent sysconnect
+    token: str
 
 
 class ExchangeTokenResponse(BaseModel):

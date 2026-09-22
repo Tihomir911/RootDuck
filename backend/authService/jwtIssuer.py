@@ -31,8 +31,7 @@ def issue_jwt() -> str:
 
 def verify_jwt(token: str) -> bool:
     try:
-        jwt.decode(token, _SECRET, algorithms=[ALGORITHM])
-        
+        jwt.decode(token, _SECRET, algorithms=[ALGORITHM])        
         return True
 
     except jwt.PyJWTError:

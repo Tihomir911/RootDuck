@@ -2,25 +2,33 @@ import docker
 
 _client = docker.from_env()
 
+
 def _calculate_cpu_percent(stats: dict) -> float:
+    
     cpu_delta = (
         stats["cpu_stats"]["cpu_usage"]["total_usage"]
         - stats["precpu_stats"]["cpu_usage"]["total_usage"]
     )
-    sustem_delta = (
-        stats["cpu_stats"]["sustem_cpu_usage"]
+    system_delta = (
+        stats["cpu_stats"]["system_cpu_usage"]
         - stats["precpu_stats"]["system_cpu_usage"]
     )
-    online_cpus = stats["cpu_stats"].gey("online_cpus")
+
+    online_cpus = stats["cpu_stats"].get("online_cpus")
     if online_cpus is None:
-        online_cpus = len(stats["cpu_stats"]["cpu_usage"].get("percpu_usage", [1])) 
-    if system_delta <= 0 or cpu_detal < 0:
+        online_cpus = len(stats["cpu_stats"]["cpu_usage"].get("percpu_usage", [1]))
+
+    if system_delta <= 0 or cpu_delta < 0:
+        
         return 0.0
 
-    return(cpu_delta / system_delta) * online_cpus * 100.0
+    return (cpu_delta / system_delta) * online_cpus * 100.0
 
-def _calculate_memory_usage_md(stats: dict) -> dict:
-    usage = stats["memory_stats"]["usage"]    
+
+def _calculate_memory_usage_mb(stats: dict) -> dict:
+    
+    usage = stats["memory_stats"]["usage"]
+    
     cache = stats["memory_stats"].get("stats", {}).get("cache", 0)
     limit = stats["memory_stats"]["limit"]
 
@@ -31,9 +39,10 @@ def _calculate_memory_usage_md(stats: dict) -> dict:
         "usage_mb": round(usage_mb, 1),
         "limit_mb": round(limit_mb, 1),
     }
-    
-def get_container_stats(container_id: str) -> dict:
 
+
+def get_container_stats(container_id: str) -> dict:
+   
     container = _client.containers.get(container_id)
 
     stats = container.stats(stream=False)

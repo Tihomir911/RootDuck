@@ -1,5 +1,5 @@
 import docker
-_client - docker.from_enw()
+_client = docker.from_env()
 
 def list_containers() -> list[dict]:
     

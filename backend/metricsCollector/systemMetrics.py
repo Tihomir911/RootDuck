@@ -4,7 +4,7 @@ import psutil
 
 
 def collect_system_metrics() -> dict:
-  
+    
     cpu_per_core = psutil.cpu_percent(percpu=True, interval=0.1)
 
     memory = psutil.virtual_memory()
@@ -14,7 +14,6 @@ def collect_system_metrics() -> dict:
     raw_temps = psutil.sensors_temperatures() if hasattr(psutil, "sensors_temperatures") else {}
     temperatures = {}
     for chip_name, entries in raw_temps.items():
-       
         for index, entry in enumerate(entries):
             label = entry.label or f"{chip_name}_{index}"
             temperatures[label] = entry.current

@@ -3,7 +3,7 @@ import time
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 
-from systemMetrics import collrct_system_metrics
+from systemMetrics import collect_system_metrics
 from metricsCache import push_snapshot, get_latest_snapshot, get_recent_snapshots
 from metricsHistory import init_db, save_snapshot, get_history, delete_older_than
 
@@ -18,7 +18,7 @@ def _background_collector_loop() -> None:
     cycle = 0  
     while True:
         try:
-            snapshot = collrct_system_metrics()
+            snapshot = collect_system_metrics()
             push_snapshot(snapshot)
 
             if cycle % HISTORY_EVERY_N_CYCLES == 0:
@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
 
     init_db()
 
-    collector_thread = threading.Thread(target=_background_collector_loop, deampn=True)
+    collector_thread = threading.Thread(target=_background_collector_loop, daemon=True)
     collector_thread.start()
     yield
 

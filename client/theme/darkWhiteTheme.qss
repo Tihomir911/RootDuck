@@ -1,0 +1,99 @@
+
+QMainWindow, QWidget {
+    background-color: #0d0d0d;
+    color: #f2f2f2;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
+}
+
+QTabWidget::pane {
+    border: none;
+    background-color: #0d0d0d;
+}
+
+QTabBar::tab {
+    background-color: #1a1a1a;
+    color: #9a9a9a;
+    padding: 8px 16px;
+    margin-right: 2px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+QTabBar::tab:selected {
+    background-color: #242424;
+    color: #ffffff;
+    border-bottom: 2px solid #ffffff;
+}
+
+QTabBar::tab:hover:!selected {
+    color: #f2f2f2;
+}
+
+QPushButton {
+    background-color: #1a1a1a;
+    color: #f2f2f2;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 6px 14px;
+}
+
+QPushButton:hover {
+    background-color: #242424;
+    border-color: #ffffff;
+}
+
+QPushButton:pressed {
+    background-color: #333333;
+}
+
+QPushButton:disabled {
+    color: #6b7280;
+    border-color: #333333;
+}
+
+QLineEdit {
+    background-color: #1a1a1a;
+    color: #f2f2f2;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 6px 10px;
+    selection-background-color: #ffffff;
+    selection-color: #0d0d0d;
+}
+
+QLineEdit:focus {
+    border-color: #ffffff;
+}
+
+QScrollBar:vertical {
+    background-color: #0d0d0d;
+    width: 10px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #333333;
+    border-radius: 5px;
+    min-height: 24px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #ffffff;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+QToolTip {
+    background-color: #1a1a1a;
+    color: #f2f2f2;
+    border: 1px solid #333333;
+    padding: 4px 8px;
+}
+
+QLabel[class="secondary"] {
+    color: #9a9a9a;
+    font-size: 11px;
+}

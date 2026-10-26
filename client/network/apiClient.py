@@ -17,11 +17,9 @@ class ApiError(Exception):
         self.ststus_code = status_code
         self.detail = detail
         super().__init__(f"HTTP {status_code}: {detail}")
-     
-
+      
 class ConnectionError(Exception):
     """Ошибка подключения или протокола RootDuck."""
-
 
 def _normalize_fingerprint(fingerprint: str) -> str:
     """Убирает разделители из SHA-256 fingerprint."""
@@ -42,18 +40,12 @@ def _normalize_fingerprint(fingerprint: str) -> str:
 
     return normalized
 
-
 def get_server_fingerprint(
     host: str,
     port: int = DEFAULT_AGENT_PORT,
     timeout: float = DEFAULT_TIMEOUT,
 ) -> str:
-    """
-    Получает SHA-256 fingerprint TLS-сертификата сервера.
-
-    ВАЖНО: результат сам по себе не является доказательством подлинности.
-    Сверь его с fingerprint, полученным по доверенному каналу.
-    """
+   
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.check_hostname = False
     context.verify_mode = ssl.CERT_NONE
@@ -74,19 +66,8 @@ def get_server_fingerprint(
         for index in range(0, len(digest), 2)
     )
 
-
 class _RootDuckConnection(http.client.HTTPConnection):
-    """
-    HTTP поверх TLS-соединения с предварительной авторизацией RootDuck.
-
-    Порядок протокола:
-    1. TLS handshake.
-    2. Проверка fingerprint.
-    3. Передача TOKEN: <token>.
-    4. Проверка ответа OK.
-    5. Обычный HTTP поверх того же TLS-соединения.
-    """
-
+    
     def __init__(
         self,
         host: str,
@@ -117,8 +98,6 @@ class _RootDuckConnection(http.client.HTTPConnection):
         try:
             context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 
-            # Сертификат самоподписанный, поэтому стандартная проверка CA
-            # не сработает. Вместо неё проверяем точный SHA-256 fingerprint.
             context.check_hostname = False
             context.verify_mode = ssl.CERT_NONE
 
@@ -142,13 +121,10 @@ class _RootDuckConnection(http.client.HTTPConnection):
                     "Соединение отклонено."
                 )
 
-            # Токен передаём только после успешной проверки сертификата.
             tls_socket.sendall(
                 f"TOKEN: {self.token}\n".encode("utf-8")
             )
 
-            # Читаем ответ строго до перевода строки, не захватывая
-            # начало следующего HTTP-ответа.
             response = bytearray()
 
             while len(response) < MAX_HANDSHAKE_LINE:
@@ -175,7 +151,6 @@ class _RootDuckConnection(http.client.HTTPConnection):
                     f"Агент отклонил соединение: {message}"
                 )
 
-            # HTTPConnection использует этот сокет для обычных HTTP-запросов.
             self.sock = tls_socket
 
         except Exception:
@@ -219,14 +194,7 @@ class ApiClient:
         payload: dict[str, Any] | None = None,
         authenticated: bool = False,
     ) -> Any:
-        """
-        Выполняет HTTP-запрос через TLS-прокси RootDuck.
-
-        method: GET, POST и другие HTTP-методы.
-        path: путь API, например /auth/exchange.
-        payload: JSON-тело запроса, если оно необходимо.
-        authenticated: добавить Bearer JWT в заголовки.
-        """
+        
         if not path.startswith("/") or path.startswith("//"):
             raise ValueError("API path должен начинаться с одного '/'")
 
@@ -317,7 +285,6 @@ class ApiClient:
         path: str,
         authenticated: bool = True,
     ) -> Any:
-        """Выполняет GET-запрос."""
         return self.request(
             method="GET",
             path=path,
@@ -330,7 +297,7 @@ class ApiClient:
         payload: dict[str, Any],
         authenticated: bool = True,
     ) -> Any:
-        """Выполняет POST-запрос с JSON-телом."""
+    
         return self.request(
             method="POST",
             path=path,
